@@ -1,6 +1,6 @@
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel,Field
-from typing import Annotated
+from typing import Annotated, Optional
 import json
 
 
@@ -11,6 +11,13 @@ class userClass(BaseModel):
     role:Annotated[str, Field(...,description="User Role",example="user")]
     age: Annotated[int,Field(...,description="User Age",example=30)]
     status:Annotated[str,Field(...,description="User Status",example="active")]
+class userClassUpdate(BaseModel):
+   
+    name: Annotated[Optional[str], Field(default=None ,example="Jon Doe") ]
+    email: Annotated[Optional[str], Field(default=None,example="johndoe@example.com") ]
+    role:Annotated[Optional[str], Field(default=None,example="user")]
+    age: Annotated[Optional[int],Field(default=None,example=30)]
+    status:Annotated[Optional[str],Field(default=None,example="active")]
 
 
 
@@ -61,7 +68,7 @@ def sort_users(sorted_by:str,age:str):
     return {"sorted_users": sorted_users}
 
 
-@app.post("/api/v1/users")
+@app.post("/api/v1/create/users")
 def create_user(user: userClass):
     users_data=load_users()['users']
     if user.id in users_data:
@@ -72,3 +79,13 @@ def create_user(user: userClass):
     users_data[user.id]=user.model_dump(exclude=['id'])
     save_users(users_data)
     return {"message": "User created successfully", "user": user.id}
+
+@app.put("/api/v1/update/users/{user_id}")
+def update_user(user:userClassUpdate,user_id:str):
+    users_data=load_users()['users']
+    if user_id not in users_data:
+        raise HTTPException(status_code=404, detail="User not found")
+    users_data[user_id].update(user.model_dump(exclude_unset=True))
+    save_users(users_data)
+    return {"message": "User updated successfully", "user": user_id}
+    
