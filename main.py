@@ -21,6 +21,10 @@ def load_users():
             data=json.load(f)
     return{"users": data}
 
+def save_users(users):
+    with open('user.json','w')as f:
+        json.dump(users,f)
+
 
 @app.get("/")
 def view():
@@ -57,3 +61,8 @@ def sort_users(sorted_by:str,age:str):
     return {"sorted_users": sorted_users}
 
 
+@app.post("/api/v1/users")
+def create_user(user: userClass):
+    users=load_users()
+    users[user.id]=user.model_dump(exclude=['id'])
+    save_users(users)
