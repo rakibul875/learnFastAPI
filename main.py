@@ -1,12 +1,17 @@
 from fastapi import FastAPI,HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from typing import Annotated
 import json
 
 
 class userClass(BaseModel):
-    id: Annotated[str, "User ID"]
-    
+    id: Annotated[str, Field(...,description="User ID", example="123") ]
+    name: Annotated[str, Field(...,description="User Name", example="Jon Doe") ]
+    email: Annotated[str, Field(...,description="User Email", example="johndoe@example.com") ]
+    role:Annotated[str, Field(...,description="User Role",example="user")]
+    age: Annotated[int,Field(...,description="User Age",example=30)]
+    status:Annotated[str,Field(...,description="User Status",example="active")]
+
 
 
 app= FastAPI()
