@@ -145,12 +145,5 @@
         "role": "user",
         "age": 18,
         "status": "active"
-    },
-    "22": {
-        "name": "Rakibul",
-        "email": "rakibul1@gmail.com",
-        "role": "user",
-        "age": 18,
-        "status": "active"
     }
 }

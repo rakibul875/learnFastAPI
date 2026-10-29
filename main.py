@@ -88,4 +88,12 @@ def update_user(user:userClassUpdate,user_id:str):
     users_data[user_id].update(user.model_dump(exclude_unset=True))
     save_users(users_data)
     return {"message": "User updated successfully", "user": user_id}
-    
+
+@app.delete("/api/v1/delete/users/{user_id}")
+def delete_user(user_id:str):
+    users_data=load_users()['users'] 
+    if user_id not in users_data:
+        raise HTTPException(status_code=404, detail="User not found")
+    del users_data[user_id]
+    save_users(users_data)
+    return {"message": "User deleted successfully", "user": user_id}
