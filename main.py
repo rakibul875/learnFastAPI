@@ -21,9 +21,9 @@ def load_users():
             data=json.load(f)
     return{"users": data}
 
-def save_users(users):
+def save_users(users_data):
     with open('user.json','w')as f:
-        json.dump(users,f)
+        json.dump(users_data,f,indent=4)
 
 
 @app.get("/")
@@ -63,6 +63,12 @@ def sort_users(sorted_by:str,age:str):
 
 @app.post("/api/v1/users")
 def create_user(user: userClass):
-    users=load_users()
-    users[user.id]=user.model_dump(exclude=['id'])
-    save_users(users)
+    users_data=load_users()['users']
+    if user.id in users_data:
+        raise HTTPException(status_code=400, detail="User already exists")
+    for existing_user in users_data.values():
+        if existing_user['email']==user.email:
+            raise HTTPException(status_code=400, detail="Email already exists")
+    users_data[user.id]=user.model_dump(exclude=['id'])
+    save_users(users_data)
+    return {"message": "User created successfully", "user": user.id}
