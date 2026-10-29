@@ -1,5 +1,14 @@
 from fastapi import FastAPI,HTTPException
+from pydantic import BaseModel
+from typing import Annotated
 import json
+
+
+class userClass(BaseModel):
+    id: Annotated[str, "User ID"]
+    
+
+
 app= FastAPI()
 
 def load_users():
