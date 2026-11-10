@@ -15,3 +15,4 @@ client = AsyncIOMotorClient(
 database = client["my_fastapi_db"]
 users_collection = database["users"]
 #comments_collection = database["comments"]
+#codes_collection = database["codes"]
